@@ -1,6 +1,6 @@
 # Note-to-clipboard
 
-An [quality of life](https://en.wiktionary.org/wiki/quality_of_life) plugin for [Obsidian.md](https://obsidian.md/).
+A [quality of life](https://en.wiktionary.org/wiki/quality_of_life) plugin for [Obsidian.md](https://obsidian.md/).
 
 Processes your note contents and adds it to your clipboard to optimally paste them into a rich text field, e.g., Google Docs, Word etc..
 
