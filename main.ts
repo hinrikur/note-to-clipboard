@@ -129,7 +129,7 @@ export default class NoteToClipboard extends Plugin {
 			November: "nóvember",
 			December: "desember",
 		};
-		let realMonthPart = MonthMap[monthPart as keyof typeof MonthMap];
+		const realMonthPart = MonthMap[monthPart as keyof typeof MonthMap];
 		return `${parseInt(dayPart)}. ${realMonthPart} ${yearPart}`;
 	}
 
@@ -180,7 +180,7 @@ export default class NoteToClipboard extends Plugin {
 		console.log(processedContent);
 		return processedContent;
 	}
-	buildHtmlStyles(html) {
+	buildHtmlStyles(html: string) {
 		let style = `
 		<style type="text/css">
 			body {
@@ -233,7 +233,7 @@ export default class NoteToClipboard extends Plugin {
 	convertMarkdownListToHtml(lines: string[]): string {
 		let html = "";
 		let currentIndentLevel = 0;
-		let openTags = [];
+		const openTags: string[] = [];
 
 		lines.forEach((line) => {
 			const indentLevel = line.search(/\S|$/); // Find first non-whitespace character
@@ -256,10 +256,9 @@ export default class NoteToClipboard extends Plugin {
 			while (currentIndentLevel > indentLevel && openTags.length > 0) {
 				const tag = openTags.pop();
 				currentIndentLevel -= 1;
-				html += `${" ".repeat(currentIndentLevel)}${tag.replace(
-					"<",
-					"</"
-				)}\n`;
+				html += `${" ".repeat(currentIndentLevel)}${
+					tag?.replace("<", "</") ?? ""
+				}\n`;
 			}
 
 			// Adjust if changing list type at the same indentation
@@ -288,7 +287,7 @@ export default class NoteToClipboard extends Plugin {
 		// Close any remaining tags
 		while (openTags.length > 0) {
 			const tag = openTags.pop();
-			html += `${tag.replace("<", "</")}\n`;
+			html += `${tag?.replace("<", "</") ?? ""}\n`;
 		}
 		const applyOtherFormatting = (html: string) => {
 			html = html
@@ -374,9 +373,7 @@ export default class NoteToClipboard extends Plugin {
 		// Close any open HTML tags here
 		html += "</body>\n</div>\n";
 
-		console.log(
-			beautify(html, { indent_size: 2, space_in_empty_paren: true })
-		);
+		console.log(beautify(html, { indent_size: 2 }));
 		return html;
 	}
 	copyToClipboard(htmlContent: string) {
@@ -388,6 +385,10 @@ export default class NoteToClipboard extends Plugin {
 		// Select the content
 		const range = document.createRange();
 		const sel = window.getSelection();
+		// make sure the sel instance is not null
+		if (!sel) {
+			return;
+		}
 		range.selectNodeContents(div);
 		sel.removeAllRanges();
 		sel.addRange(range);
